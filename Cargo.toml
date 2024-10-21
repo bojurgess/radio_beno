@@ -4,3 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+tokio = { version = "1.40.0", features = ["full"] }
+serenity = { version = "0.12.2" }
+poise = { version = "0.6.1" }
+songbird = { version = "0.4.3" }
+dotenvy = { version = "0.15.7" }
