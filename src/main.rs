@@ -7,13 +7,7 @@ use handler::Handler;
 use poise::serenity_prelude as serenity;
 
 use reqwest::Client as HttpClient;
-use songbird::{typemap::TypeMapKey, SerenityInit};
-
-struct HttpKey;
-
-impl TypeMapKey for HttpKey {
-    type Value = HttpClient;
-}
+use songbird::SerenityInit;
 
 #[tokio::main]
 async fn main() {
@@ -39,7 +33,9 @@ async fn main() {
         .setup(|ctx, _ready, framework| {
             Box::pin(async move {
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
-                Ok(Data {})
+                Ok(Data {
+                    http_client: HttpClient::new(),
+                })
             })
         })
         .build();
@@ -48,7 +44,6 @@ async fn main() {
         .framework(framework)
         .event_handler(Handler)
         .register_songbird()
-        .type_map_insert::<HttpKey>(HttpClient::new())
         .await;
     client.unwrap().start().await.unwrap();
 }
