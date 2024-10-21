@@ -5,21 +5,15 @@ pub struct Data {
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Data, Error>;
 
-pub mod util;
 pub mod voice;
 
 use poise::ReplyHandle;
-use util::*;
 use voice::*;
 
 pub type Commands = Vec<poise::Command<Data, Error>>;
 
 pub fn voice_commands() -> Vec<poise::Command<Data, Error>> {
     vec![join(), play()]
-}
-
-pub fn util_commands() -> Vec<poise::Command<Data, Error>> {
-    vec![register_commands()]
 }
 
 pub fn check_msg(result: Result<ReplyHandle<'_>, serenity::Error>) {
