@@ -1,7 +1,7 @@
 use serenity::async_trait;
 use songbird::events::{Event, EventContext, TrackEvent};
 
-use super::{Context, Error};
+use crate::commands::{Context, Error};
 
 struct TrackErrorNotifier;
 

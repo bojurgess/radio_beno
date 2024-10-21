@@ -24,13 +24,16 @@ async fn main() {
         | serenity::GatewayIntents::MESSAGE_CONTENT
         | serenity::GatewayIntents::GUILD_VOICE_STATES;
 
+    let mut commands: Commands = vec![];
+    commands.append(voice_commands().as_mut());
+
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
             prefix_options: poise::PrefixFrameworkOptions {
                 prefix: Some("d.".into()),
                 ..Default::default()
             },
-            commands: vec![commands::test(), commands::join()],
+            commands: commands,
             ..Default::default()
         })
         .setup(|ctx, _ready, framework| {

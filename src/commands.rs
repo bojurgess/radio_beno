@@ -3,8 +3,13 @@ pub struct Data;
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Data, Error>;
 
-pub mod join;
-pub mod test;
+pub mod voice;
 
-pub use join::join;
-pub use test::test;
+use voice::join;
+
+pub type Commands = Vec<poise::Command<Data, Error>>;
+
+// put voice commands in global array variable
+pub fn voice_commands() -> Vec<poise::Command<Data, Error>> {
+    vec![join()]
+}
