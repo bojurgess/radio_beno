@@ -20,6 +20,7 @@ async fn main() {
 
     let mut commands: Commands = vec![];
     commands.append(voice_commands().as_mut());
+    commands.append(util_commands().as_mut());
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
@@ -27,7 +28,7 @@ async fn main() {
                 prefix: Some("d.".into()),
                 ..Default::default()
             },
-            commands: commands,
+            commands,
             ..Default::default()
         })
         .setup(|ctx, _ready, framework| {
