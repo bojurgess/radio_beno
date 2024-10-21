@@ -6,17 +6,31 @@ use handler::Handler;
 
 use poise::serenity_prelude as serenity;
 
+use reqwest::Client as HttpClient;
+use songbird::{typemap::TypeMapKey, SerenityInit};
+
+struct HttpKey;
+
+impl TypeMapKey for HttpKey {
+    type Value = HttpClient;
+}
+
 #[tokio::main]
 async fn main() {
     dotenvy::dotenv().expect("Failed to load .env file");
 
     let token = std::env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
-    let intents =
-        serenity::GatewayIntents::non_privileged() | serenity::GatewayIntents::MESSAGE_CONTENT;
+    let intents = serenity::GatewayIntents::non_privileged()
+        | serenity::GatewayIntents::MESSAGE_CONTENT
+        | serenity::GatewayIntents::GUILD_VOICE_STATES;
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![commands::test()],
+            prefix_options: poise::PrefixFrameworkOptions {
+                prefix: Some("d.".into()),
+                ..Default::default()
+            },
+            commands: vec![commands::test(), commands::join()],
             ..Default::default()
         })
         .setup(|ctx, _ready, framework| {
@@ -30,6 +44,8 @@ async fn main() {
     let client = serenity::ClientBuilder::new(token, intents)
         .framework(framework)
         .event_handler(Handler)
+        .register_songbird()
+        .type_map_insert::<HttpKey>(HttpClient::new())
         .await;
     client.unwrap().start().await.unwrap();
 }
