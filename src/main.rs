@@ -1,18 +1,10 @@
+mod commands;
 mod handler;
+
+use commands::*;
 use handler::Handler;
 
 use poise::serenity_prelude as serenity;
-
-struct Data;
-
-type Error = Box<dyn std::error::Error + Send + Sync>;
-type Context<'a> = poise::Context<'a, Data, Error>;
-
-#[poise::command(slash_command, prefix_command)]
-async fn test(ctx: Context<'_>) -> Result<(), Error> {
-    ctx.say("Hello, world!").await?;
-    Ok(())
-}
 
 #[tokio::main]
 async fn main() {
@@ -24,7 +16,7 @@ async fn main() {
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
-            commands: vec![test()],
+            commands: vec![commands::test()],
             ..Default::default()
         })
         .setup(|ctx, _ready, framework| {
