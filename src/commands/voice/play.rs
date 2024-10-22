@@ -31,6 +31,7 @@ pub async fn play(
 
     if let Some(handler_lock) = manager.get(guild_id) {
         let mut handler = handler_lock.lock().await;
+
         let mut src = if should_search {
             YoutubeDl::new_search(http_client, url)
         } else {

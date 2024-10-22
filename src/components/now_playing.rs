@@ -1,5 +1,3 @@
-use std::time::Duration;
-
 use serenity::all::{ButtonStyle, ReactionType};
 use songbird::input::AuxMetadata;
 
@@ -10,7 +8,7 @@ struct UnwrappedMetadata {
     artist: String,
     source_url: String,
     thumbnail: String,
-    duration: Duration,
+    duration: chrono::Duration,
 }
 
 pub struct NowPlaying<'a> {
@@ -25,20 +23,26 @@ impl<'a> NowPlaying<'a> {
             artist: metadata.artist.unwrap(),
             source_url: metadata.source_url.unwrap(),
             thumbnail: metadata.thumbnail.unwrap(),
-            duration: metadata.duration.unwrap(),
+            duration: chrono::Duration::from_std(metadata.duration.unwrap()).unwrap(),
         };
 
         Self { metadata, context }
     }
 
     pub fn create_response(&self) -> poise::CreateReply {
+        let seconds = self.metadata.duration.num_seconds() % 60;
+        let minutes = self.metadata.duration.num_minutes() % 60;
+        let hours = self.metadata.duration.num_hours();
+        let duration = if hours > 0 {
+            format!("{:02}:{:02}:{:02}", hours, minutes, seconds)
+        } else {
+            format!("{:02}:{:02}", minutes, seconds)
+        };
+
         let title = "Now Playing";
         let description = format!(
-            ">>> [{}]({})\n**Artist:** `{}`\n**Duration**: `[{:?}]`",
-            self.metadata.title,
-            self.metadata.source_url,
-            self.metadata.artist,
-            self.metadata.duration,
+            ">>> [{}]({})\n**Artist:** `{}`\n**Duration**: `[{}]`",
+            self.metadata.title, self.metadata.source_url, self.metadata.artist, duration,
         );
 
         let footer_text = format!(
