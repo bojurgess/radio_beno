@@ -2,8 +2,8 @@ pub struct Data {
     pub http_client: reqwest::Client,
 }
 
-type Error = Box<dyn std::error::Error + Send + Sync>;
-type Context<'a> = poise::Context<'a, Data, Error>;
+pub(crate) type Error = Box<dyn std::error::Error + Send + Sync>;
+pub(crate) type Context<'a> = poise::Context<'a, Data, Error>;
 
 pub mod voice;
 

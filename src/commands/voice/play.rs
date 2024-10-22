@@ -3,6 +3,7 @@ use songbird::input::{Compose, YoutubeDl};
 use crate::{
     check_msg,
     commands::{Context, Error},
+    components,
 };
 
 #[poise::command(slash_command, prefix_command)]
@@ -47,16 +48,9 @@ pub async fn play(
             }
         });
 
-        // this format is terrible we should do embeds
-        // or components that would be fucking fire
-        let msg = format!(
-            "Playing: [{:?} - {:?}]({:?})\nDuration: {:?}",
-            metadata.title.unwrap(),
-            metadata.artist.unwrap(),
-            metadata.source_url.unwrap(),
-            metadata.duration.unwrap()
-        );
-        check_msg(ctx.reply(msg).await);
+        let reply = components::NowPlaying::new(metadata, ctx).create_response();
+
+        check_msg(poise::send_reply(ctx, reply).await);
     } else {
         check_msg(ctx.reply("Not in a voice channel").await);
     }

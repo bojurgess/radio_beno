@@ -1,4 +1,5 @@
 mod commands;
+mod components;
 mod handler;
 
 use commands::*;
